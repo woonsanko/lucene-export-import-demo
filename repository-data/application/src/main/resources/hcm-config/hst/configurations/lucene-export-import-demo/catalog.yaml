@@ -1,0 +1,6 @@
+definitions:
+  config:
+    /hst:hst/hst:configurations/luceneexportimportdemo/hst:catalog:
+      jcr:primaryType: hst:catalog
+      /luceneexportimportdemo-catalog:
+        jcr:primaryType: hst:containeritempackage

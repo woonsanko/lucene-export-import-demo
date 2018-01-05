@@ -1,0 +1,6 @@
+group: 
+  name: lucene-export-import-demo
+  after: hippo-cms
+project: lucene-export-import-demo
+module:
+  name: lucene-export-import-demo-repository-data-application
