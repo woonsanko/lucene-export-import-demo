@@ -64,3 +64,23 @@ DEBUG localhost-startStop-1 [MultiIndex.commitVolatileIndex:1194] Committed in-m
 DEBUG jackrabbit-pool-16 [MultiIndex.checkIndexingQueue:1346] updating index with 1 nodes from indexing queue.
 ...
 ```
+
+## Possible Applications
+
+### Nodes
+
+- **Lucene Index Backup Repository Server** with an SFTP directory which can be accessed by CMS Server nodes.
+- **CMS Server node (N)** 
+
+### Flow
+
+- A cron job is configured at the **Lucene Index Backup Repository Server**, and the job simply download the latest
+  Lucene Index backup zip file (e.g, "lucene-index-backup-20180106.zip") to an SFTP directory
+  and create a symbolic link to it (e.g, "lucene-index-backup-latest.zip") in the SFTP directory.
+- When a **CMS Server node (N)** is started, whether it's new or existing node, it checks if its repository folder
+  contains a non-empty ```index``` directory (e.g, ```storage/workspaces/default/index```).
+  This kind of checking can be done in ```$CATALINA_BASE/bin/appenv.sh``` which can be invoked by ```$CATALINA_BASE/bin/setenv.sh```, for example.
+- If there's no non-empty ```index``` directory, it downloads "lucene-index-backup-latest.zip" file from the SFTP directory.
+  Extracts the zip file into the ```index``` directory.
+- This way, even when a new **CMS Server node (N)** is just added and started, the lucene index won't be created
+  from the scratch, but initialized fast enough. 
