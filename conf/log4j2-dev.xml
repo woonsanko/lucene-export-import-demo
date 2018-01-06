@@ -122,6 +122,10 @@
       <AppenderRef ref="messages"/>
     </Logger>
 
+    <!-- Lucene indexing -->
+    <Logger name="org.apache.jackrabbit.core.query.lucene.SearchIndex" level="info" />
+    <Logger name="org.apache.jackrabbit.core.query.lucene.MultiIndex" level="debug" />
+
     <!-- project logging -->
     <Logger name="org.example" level="debug"/>
 
