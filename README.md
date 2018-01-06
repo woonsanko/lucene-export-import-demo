@@ -14,3 +14,13 @@ Simple project to test a basic scenario of the feature of [Lucene Index Export a
   1. Restore the Lucene Index backup zip file in ```storage/workspaces/default/index``` folder (which should be created manually): ```mkdir -p storage/workspaces/default/index && unzip lucene-index-backup.zip -d storage/workspaces/default/index```
   1. Restart with ```mvn -P cargo.run -Drepo.path=storage```. Note the lucene index is not wholly recreated.
 
+## Lucene Index Logging
+
+Add the following in ```conf/log4j*.xml```:
+
+```xml
+    <!-- Lucene indexing -->
+    <Logger name="org.apache.jackrabbit.core.query.lucene.SearchIndex" level="info" />
+    <Logger name="org.apache.jackrabbit.core.query.lucene.MultiIndex" level="debug" />
+
+```
