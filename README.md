@@ -85,6 +85,11 @@ DEBUG jackrabbit-pool-16 [MultiIndex.checkIndexingQueue:1346] updating index wit
 - This way, even when a new **CMS Server node (N)** is just added and started, the lucene index won't be created
   from the scratch, but initialized fast enough. 
 
+### Example Script on Lucene Index Backup Repository Server
+
+You might want to execute [bin/backupindex.sh](bin/backupindex.sh) periodically (perhaps by configuring as a CRON job).
+The script can download the latest index export zip file and create a symbolic link for downloads from a **Example Script on CMS Server node (N)**.
+
 ### Example Script on CMS Server node (N)
 
 You might want to add the following line in ```$CATALINA_BASE/bin/setenv.sh``` file:
