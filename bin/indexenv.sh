@@ -13,6 +13,8 @@ if [ ! -d "$REPO_PATH/workspaces/default/index" ]; then
     rm ${CATALINA_BASE}/temp/${INDEX_ZIP}
   fi
 
+  mkdir -p ${CATALINA_BASE}/temp
+
   # Download the latest index export zip file.
   case "$INDEX_URL" in
     sftp://*)
