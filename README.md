@@ -84,3 +84,16 @@ DEBUG jackrabbit-pool-16 [MultiIndex.checkIndexingQueue:1346] updating index wit
   Extracts the zip file into the ```index``` directory.
 - This way, even when a new **CMS Server node (N)** is just added and started, the lucene index won't be created
   from the scratch, but initialized fast enough. 
+
+### Example Script on CMS Server node (N)
+
+You might want to add the following line in ```$CATALINA_BASE/bin/setenv.sh``` file:
+
+```bash
+# Check for index specific configurations at startup...
+if [ -r "$CATALINA_BASE/bin/indexenv.sh" ]; then
+  . "$CATALINA_BASE/bin/indexenv.sh"
+fi
+```
+
+to execute [bin/indexenv.sh](bin/indexenv.sh) optionally.
