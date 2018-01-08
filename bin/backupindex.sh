@@ -5,6 +5,7 @@ INDEX_SL_ZIP="index-export-latest.zip"
 INDEX_TS_ZIP="index-export-$(date +'%Y%m%d-%H%M%S').zip"
 INDEX_URL="http://server1.example.com:8080/cms/ws/indexexport"
 
+mkdir -p INDEX_DIR
 curl --user admin:admin ${INDEX_URL} -o ${INDEX_DIR}/${INDEX_TS_ZIP}
 
 if [ ! $? -eq 0 ]; then
