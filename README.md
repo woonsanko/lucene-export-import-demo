@@ -90,6 +90,8 @@ DEBUG jackrabbit-pool-16 [MultiIndex.checkIndexingQueue:1346] updating index wit
 You might want to execute [bin/backupindex.sh](bin/backupindex.sh) periodically (perhaps by configuring as a CRON job).
 The script can download the latest index export zip file and create a symbolic link for downloads from a **Example Script on CMS Server node (N)**.
 
+Reference about CRON: https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/
+
 ### Example Script on CMS Server node (N)
 
 You might want to add the following line in ```$CATALINA_BASE/bin/setenv.sh``` file:
