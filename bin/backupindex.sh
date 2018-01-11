@@ -15,6 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+##########################################################################
+# Configuration Parameters
+##########################################################################
+
 # Local index backup directory path.
 LOCAL_INDEX_BACKUP_DIR="/data"
 
@@ -26,6 +30,10 @@ INDEX_URLS="http://server1.example.com:8080/cms/ws/indexexport"
 LOCAL_INDEX_SL_ZIP="index-export-latest.zip"
 # Local index backup download file name with the current timestamp.
 LOCAL_INDEX_TS_ZIP="index-export-$(date +'%Y%m%d-%H%M%S').zip"
+
+##########################################################################
+# Internal Backup Flow from here.
+##########################################################################
 
 mkdir -p LOCAL_INDEX_BACKUP_DIR
 
