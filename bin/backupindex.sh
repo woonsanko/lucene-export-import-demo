@@ -29,16 +29,19 @@ LOCAL_INDEX_TS_ZIP="index-export-$(date +'%Y%m%d-%H%M%S').zip"
 
 mkdir -p LOCAL_INDEX_BACKUP_DIR
 
+LOCAL_INDEX_TS_ZIP_DOWNLOADED="false"
+
 # Loop each index export download URL and break the loop when successful.
 for INDEX_URL in $INDEX_URLS; do
   curl --user admin:admin ${INDEX_URL} -o ${LOCAL_INDEX_BACKUP_DIR}/${LOCAL_INDEX_TS_ZIP}
   if [ $? -eq 0 ]; then
+    LOCAL_INDEX_TS_ZIP_DOWNLOADED="true"
     break
   fi
 done
 
 # Fail if it failed to download index export zip file.
-if [ ! -f "${LOCAL_INDEX_BACKUP_DIR}/${LOCAL_INDEX_TS_ZIP}" ]; then
+if [ "${LOCAL_INDEX_TS_ZIP_DOWNLOADED}" != "true" ]; then
   echo "Failed to download index export zip file."
   exit 1
 fi
