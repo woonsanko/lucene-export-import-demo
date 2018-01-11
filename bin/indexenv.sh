@@ -36,6 +36,8 @@ if [ ! -d "$REPO_PATH/workspaces/default/index" ]; then
   # Make temp directory if not existing.
   mkdir -p ${CATALINA_BASE}/temp
 
+  LOCAL_INDEX_ZIP_DOWNLOADED="false"
+
   # Loop each index export download URL and break the loop when successful.
   for INDEX_URL in $INDEX_URLS; do
     # Download the latest index export zip file.
@@ -43,24 +45,28 @@ if [ ! -d "$REPO_PATH/workspaces/default/index" ]; then
       sftp://*)
         sftp ${INDEX_URL:7} ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}
         if [ $? -eq 0 ]; then
+          LOCAL_INDEX_ZIP_DOWNLOADED="true"
           break
         fi
         ;;
       http://*)
         curl ${INDEX_URL:7} -o ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}
         if [ $? -eq 0 ]; then
+          LOCAL_INDEX_ZIP_DOWNLOADED="true"
           break
         fi
         ;;
       https://*)
         curl ${INDEX_URL:8} -o ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}
         if [ $? -eq 0 ]; then
+          LOCAL_INDEX_ZIP_DOWNLOADED="true"
           break
         fi
         ;;
       file://*)
         cp ${INDEX_URL:7} ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}
         if [ $? -eq 0 ]; then
+          LOCAL_INDEX_ZIP_DOWNLOADED="true"
           break
         fi
         ;;
@@ -70,7 +76,7 @@ if [ ! -d "$REPO_PATH/workspaces/default/index" ]; then
   done
 
   # Fail if it failed to download index export zip file.
-  if [ ! -f "${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}" ]; then
+  if [ "${LOCAL_INDEX_ZIP_DOWNLOADED}" != "true" ]; then
     echo "Failed to download index export zip file."
     exit 1
   fi
