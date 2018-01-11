@@ -15,6 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+##########################################################################
+# Configuration Parameters
+##########################################################################
+
 # The base repository directory (e.g, "storage").
 REPO_PATH="${CATALINA_BASE}/repository"
 
@@ -25,6 +29,10 @@ INDEX_URLS="sftp://user:pass@fileserver.example.com:/data/index-export-latest.zi
 
 # Local index exported zip file name to be downloaded in a temporary directory.
 LOCAL_INDEX_ZIP="index-export-latest.zip"
+
+##########################################################################
+# Internal Backup Flow from here.
+##########################################################################
 
 # Should try to download index export zip only when the index directory doesn't exist (e.g, on a clean cluster node).
 if [ ! -d "$REPO_PATH/workspaces/default/index" ]; then
