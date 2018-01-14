@@ -98,9 +98,9 @@ You might want to add the following line in ```$CATALINA_BASE/bin/setenv.sh``` f
 
 ```bash
 # Check for index specific configurations at startup...
-if [ -r "$CATALINA_BASE/bin/indexenv.sh" ]; then
-  . "$CATALINA_BASE/bin/indexenv.sh"
+if [ -r "$CATALINA_BASE/bin/index-init.sh" ]; then
+  . "$CATALINA_BASE/bin/index-init.sh"
 fi
 ```
 
-to execute [bin/indexenv.sh](bin/indexenv.sh) optionally.
+to execute [bin/index-init.sh](bin/index-init.sh) optionally.
