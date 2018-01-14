@@ -79,7 +79,7 @@ DEBUG jackrabbit-pool-16 [MultiIndex.checkIndexingQueue:1346] updating index wit
   and create a symbolic link to it (e.g, "lucene-index-backup-latest.zip") in the SFTP directory.
 - When a **CMS Server node (N)** is started, whether it's new or existing node, it checks if its repository folder
   contains a non-empty ```index``` directory (e.g, ```storage/workspaces/default/index```).
-  This kind of checking can be done in ```$CATALINA_BASE/bin/appenv.sh``` which can be invoked by ```$CATALINA_BASE/bin/setenv.sh```, for example.
+  This kind of checking can be done in ```$CATALINA_BASE/bin/index-init.sh``` which can be invoked by ```$CATALINA_BASE/bin/setenv.sh```, for example.
 - If there's no non-empty ```index``` directory, it downloads "lucene-index-backup-latest.zip" file from the SFTP directory.
   Extracts the zip file into the ```index``` directory.
 - This way, even when a new **CMS Server node (N)** is just added and started, the lucene index won't be created
