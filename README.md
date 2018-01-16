@@ -103,4 +103,4 @@ if [ -r "$CATALINA_BASE/bin/index-init.sh" ]; then
 fi
 ```
 
-to execute [bin/index-init.sh](bin/index-init.sh) optionally.
+to execute [bin/index-init.sh](https://github.com/woonsanko/recipe-for-dockerizing-hippo-cms/blob/master/examples/index-init.sh) optionally.
