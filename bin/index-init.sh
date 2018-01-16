@@ -23,6 +23,8 @@ if [ "$#" -lt 2 ]; then
   echo "    > $0 repository sftp://user:pass@fileserver1.example.com:/data/index-export-latest.zip"
   echo "    > $0 /usr/local/tomcat/repository http://user:pass@fileserver1.example.com/data/index-export-latest.zip http://user:pass@fileserver2.example.com/data/index-export-latest.zip"
   echo "    > $0 /usr/local/tomcat/storage file:///data/index-export-latest.zip"
+  echo "    > $0 /usr/local/tomcat/storage file:/data/index-export-latest.zip"
+  echo "    > $0 /usr/local/tomcat/storage /data/index-export-latest.zip"
   echo
   exit 1
 fi
