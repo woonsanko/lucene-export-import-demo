@@ -15,85 +15,123 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if [ "$#" -lt 2 ]; then
+  echo
+  echo "  Usage: $0 <repository_directory_path> <index_export_download_URI> [<index_export_download_URI> ...]" >&2
+  echo
+  echo "  Examples:"
+  echo "    > $0 repository sftp://user:pass@fileserver1.example.com:/data/index-export-latest.zip"
+  echo "    > $0 /usr/local/tomcat/repository http://user:pass@fileserver1.example.com/data/index-export-latest.zip http://user:pass@fileserver2.example.com/data/index-export-latest.zip"
+  echo "    > $0 /usr/local/tomcat/storage file:///data/index-export-latest.zip"
+  echo
+  exit 1
+fi
+
+# The base repository directory (e.g, "storage").
+REPO_PATH="${1}"
+
+# Space separated (multiple) index export/download URLs. Each URL is tried as ordered.
+#INDEX_DOWNLOAD_URIS="sftp://user:pass@fileserver.example.com:/data/index-export-latest.zip"
+#INDEX_DOWNLOAD_URIS="http://user:pass@fileserver.example.com:/data/index-export-latest.zip"
+#INDEX_DOWNLOAD_URIS="file:///data/index-export-latest.zip"
+
+shift
+INDEX_DOWNLOAD_URIS="$@"
+
 ##########################################################################
 # Configuration Parameters
 ##########################################################################
 
-# The base repository directory (e.g, "storage").
-REPO_PATH="${CATALINA_BASE}/repository"
-
-# Space separated (multiple) index export/download URLs. Each URL is tried as ordered.
-INDEX_URLS="sftp://user:pass@fileserver.example.com:/data/index-export-latest.zip"
-#INDEX_URLS="http://user:pass@fileserver.example.com:/data/index-export-latest.zip"
-#INDEX_URLS="file:///data/index-export-latest.zip"
-
 # Local index exported zip file name to be downloaded in a temporary directory.
 LOCAL_INDEX_ZIP="index-export-latest.zip"
+
+TEMP_DOWNLOAD_DIR="/tmp"
+
+if [ ! -z "${CATALINA_BASE}" ]; then
+  TEMP_DOWNLOAD_DIR="${CATALINA_BASE}/temp"
+fi
 
 ##########################################################################
 # Internal Backup Flow from here.
 ##########################################################################
 
-# Should try to download index export zip only when the index directory doesn't exist (e.g, on a clean cluster node).
-if [ ! -d "$REPO_PATH/workspaces/default/index" ]; then
-  # If there's any local download file, remove it first before downloading.
-  if [ -f "${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}" ]; then
-    rm ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}
-  fi
+LOCAL_INDEX_DIR="$REPO_PATH/workspaces/default/index"
+TEMP_DOWNLOAD_INDEX_ZIP="${TEMP_DOWNLOAD_DIR}/${LOCAL_INDEX_ZIP}"
 
-  # Make temp directory if not existing.
-  mkdir -p ${CATALINA_BASE}/temp
-
-  LOCAL_INDEX_ZIP_DOWNLOADED="false"
-
-  # Loop each index export download URL and break the loop when successful.
-  for INDEX_URL in $INDEX_URLS; do
-    # Download the latest index export zip file.
-    case "$INDEX_URL" in
-      sftp://*)
-        sftp ${INDEX_URL:7} ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}
-        if [ $? -eq 0 ]; then
-          LOCAL_INDEX_ZIP_DOWNLOADED="true"
-          break
-        fi
-        ;;
-      http://*)
-        curl ${INDEX_URL:7} -o ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}
-        if [ $? -eq 0 ]; then
-          LOCAL_INDEX_ZIP_DOWNLOADED="true"
-          break
-        fi
-        ;;
-      https://*)
-        curl ${INDEX_URL:8} -o ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}
-        if [ $? -eq 0 ]; then
-          LOCAL_INDEX_ZIP_DOWNLOADED="true"
-          break
-        fi
-        ;;
-      file://*)
-        cp ${INDEX_URL:7} ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}
-        if [ $? -eq 0 ]; then
-          LOCAL_INDEX_ZIP_DOWNLOADED="true"
-          break
-        fi
-        ;;
-      *)
-        echo "Invalid index download URL that must be either sftp or http(s): '$INDEX_URL'"; exit 1;;
-    esac
-  done
-
-  # Fail if it failed to download index export zip file.
-  if [ "${LOCAL_INDEX_ZIP_DOWNLOADED}" != "true" ]; then
-    echo "Failed to download index export zip file."
-    exit 1
-  fi
-
-  # Make the lucene index directory under the repository directory path if not existing.
-  mkdir -p $REPO_PATH/workspaces/default/index
-  # Unzip the index export zip to the index directory.
-  unzip ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP} -d $REPO_PATH/workspaces/default/index
-
-  # Remove the temporary index export zip file
-  rm ${CATALINA_BASE}/temp/${LOCAL_INDEX_ZIP}
+if [ -d "${LOCAL_INDEX_DIR}" ]; then
+  echo "No need to initialize the index as it already exists at ${LOCAL_INDEX_DIR} ..."
+  exit 0
 fi
+
+# If there's any local download file, remove it first before downloading.
+if [ -f "${TEMP_DOWNLOAD_INDEX_ZIP}" ]; then
+  rm ${TEMP_DOWNLOAD_INDEX_ZIP}
+fi
+
+# Make temp directory if not existing.
+mkdir -p ${TEMP_DOWNLOAD_DIR}
+
+LOCAL_INDEX_ZIP_DOWNLOADED="false"
+
+# Loop each index export download URL and break the loop when successful.
+for INDEX_URI in $INDEX_DOWNLOAD_URIS; do
+  # Download the latest index export zip file.
+  case "${INDEX_URI}" in
+    sftp://*)
+      sftp ${INDEX_URI:7} ${TEMP_DOWNLOAD_INDEX_ZIP}
+      if [ $? -eq 0 ]; then
+        LOCAL_INDEX_ZIP_DOWNLOADED="true"
+        break
+      fi
+      ;;
+    http://*)
+      curl -f ${INDEX_URI} -o ${TEMP_DOWNLOAD_INDEX_ZIP}
+      if [ $? -eq 0 ]; then
+        LOCAL_INDEX_ZIP_DOWNLOADED="true"
+        break
+      fi
+      ;;
+    https://*)
+      curl -f ${INDEX_URI} -o ${TEMP_DOWNLOAD_INDEX_ZIP}
+      if [ $? -eq 0 ]; then
+        LOCAL_INDEX_ZIP_DOWNLOADED="true"
+        break
+      fi
+      ;;
+    file://*)
+      cp ${INDEX_URI:7} ${TEMP_DOWNLOAD_INDEX_ZIP}
+      if [ $? -eq 0 ]; then
+        LOCAL_INDEX_ZIP_DOWNLOADED="true"
+        break
+      fi
+      ;;
+    file:*)
+      cp ${INDEX_URI:5} ${TEMP_DOWNLOAD_INDEX_ZIP}
+      if [ $? -eq 0 ]; then
+        LOCAL_INDEX_ZIP_DOWNLOADED="true"
+        break
+      fi
+      ;;
+    *)
+      cp ${INDEX_URI} ${TEMP_DOWNLOAD_INDEX_ZIP}
+      if [ $? -eq 0 ]; then
+        LOCAL_INDEX_ZIP_DOWNLOADED="true"
+        break
+      fi
+      ;;
+  esac
+done
+
+# Fail if it failed to download index export zip file.
+if [ "${LOCAL_INDEX_ZIP_DOWNLOADED}" != "true" ]; then
+  echo "Failed to download index export zip file."
+  exit 1
+fi
+
+# Make the lucene index directory under the repository directory path if not existing.
+mkdir -p ${LOCAL_INDEX_DIR}
+# Unzip the index export zip to the index directory.
+unzip ${TEMP_DOWNLOAD_INDEX_ZIP} -d ${LOCAL_INDEX_DIR}
+
+# Remove the temporary index export zip file
+rm ${TEMP_DOWNLOAD_INDEX_ZIP}
