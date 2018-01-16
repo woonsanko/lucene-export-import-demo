@@ -87,7 +87,7 @@ DEBUG jackrabbit-pool-16 [MultiIndex.checkIndexingQueue:1346] updating index wit
 
 ### Example Script on Lucene Index Backup Repository Server
 
-You might want to execute [bin/backupindex.sh](bin/backupindex.sh) periodically (perhaps by configuring as a CRON job). The script can be put anywhere on the **Lucene Index Backup Repository Server**.
+You might want to execute [index-backup.sh](https://github.com/woonsanko/recipe-for-dockerizing-hippo-cms/blob/master/examples/index-backup.sh) periodically (perhaps by configuring as a CRON job). The script can be put anywhere on the **Lucene Index Backup Repository Server**.
 The script can download the latest index export zip file and create a symbolic link for downloads from a **Example Script on CMS Server node (N)**.
 
 Reference about CRON: https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/
@@ -103,4 +103,4 @@ if [ -r "$CATALINA_BASE/bin/index-init.sh" ]; then
 fi
 ```
 
-to execute [bin/index-init.sh](https://github.com/woonsanko/recipe-for-dockerizing-hippo-cms/blob/master/examples/index-init.sh) optionally.
+to execute [index-init.sh](https://github.com/woonsanko/recipe-for-dockerizing-hippo-cms/blob/master/examples/index-init.sh) optionally.
