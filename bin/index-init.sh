@@ -30,11 +30,6 @@ fi
 # The base repository directory (e.g, "storage").
 REPO_PATH="${1}"
 
-# Space separated (multiple) index export/download URLs. Each URL is tried as ordered.
-#INDEX_DOWNLOAD_URIS="sftp://user:pass@fileserver.example.com:/data/index-export-latest.zip"
-#INDEX_DOWNLOAD_URIS="http://user:pass@fileserver.example.com:/data/index-export-latest.zip"
-#INDEX_DOWNLOAD_URIS="file:///data/index-export-latest.zip"
-
 shift
 INDEX_DOWNLOAD_URIS="$@"
 
