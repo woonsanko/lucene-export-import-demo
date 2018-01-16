@@ -99,7 +99,7 @@ You might want to add the following line in ```$CATALINA_BASE/bin/setenv.sh``` f
 ```bash
 # Check for index specific configurations at startup...
 if [ -r "$CATALINA_BASE/bin/index-init.sh" ]; then
-  . $CATALINA_BASE/bin/index-init.sh $REPO_PATH $INDEX_EXPORT_ZIP_URIS
+  . "$CATALINA_BASE/bin/index-init.sh" "$REPO_PATH" $INDEX_EXPORT_ZIP_URIS
 fi
 ```
 
